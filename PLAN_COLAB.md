@@ -132,7 +132,30 @@ Format .npz :
 - [x] env
 - [x] dataset
 - [x] training (src/model.py + wm_train.ipynb)
-- [ ] LeWM complet (évaluation, planification MPC)
+- [x] évaluation (wm_probe.ipynb — PCA, linear probes)
+- [x] planification MPC (wm_plan.ipynb — 95% succès, trajectoires optimales)
+
+---
+
+## Résultats obtenus (run v4 — 2026-04-01)
+
+| Métrique | Valeur |
+|---|---|
+| Dataset | 50k transitions, 128×128, sans cible dans l'obs |
+| Checkpoint | `saved_models/lewm_vit_50k_v4.pt` |
+| Loss finale | total=0.0684, pred=0.0001, sigreg=0.0068 (200 epochs) |
+| Espace latent | 25 clusters distincts (1 par case) |
+| Linear probe | agent_col R²=1.000, agent_row R²=0.990 |
+| Planification MPC | 570/600 paires réussies (95%), trajectoires optimales |
+
+Limitations connues :
+- Distance L2 dans R^192 non métrique → probe nécessaire pour le planning
+- Prédicteur T=2 → chaînage open-loop dégénère (distribution shift)
+- 5% d'échecs : cas limites de bord
+
+Prochaines étapes possibles :
+- Réentraîner avec T>2 pour le planning open-loop (CEM comme dans le papier LeWM)
+- Tester sur un environnement plus complexe (obstacles, grille plus grande)
 
 ---
 
