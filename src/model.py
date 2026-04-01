@@ -254,7 +254,10 @@ class LeWorldModel(nn.Module):
     Predictor: Transformer AdaLN — (z_t, a_t) → ẑ_{t+1}
     Loss     : MSE(ẑ_{t+1}, z_{t+1}) + λ·SIGReg(z)
 
-    Entraîné end-to-end, sans stop-gradient ni EMA.
+    stop_gradient=True (défaut) : bloque le gradient sur emb[:, 1:] (cible).
+    Nécessaire sur des environnements simples où le collapse est la solution
+    triviale. Equivalent au "target encoder" de BYOL/I-JEPA.
+    stop_gradient=False : formulation pure du papier LeWM.
     """
 
     def __init__(
@@ -269,6 +272,7 @@ class LeWorldModel(nn.Module):
         mlp_ratio       : float = 4.0,
         sigreg_M        : int   = 1024,
         sigreg_lambda   : float = 0.1,
+        stop_gradient   : bool  = True,
     ):
         super().__init__()
         self.encoder = ViTEncoder(
@@ -282,6 +286,7 @@ class LeWorldModel(nn.Module):
         )
         self.sigreg        = SIGReg(embed_dim, M=sigreg_M)
         self.sigreg_lambda = sigreg_lambda
+        self.stop_gradient = stop_gradient
 
     def encode(self, obs: torch.Tensor) -> torch.Tensor:
         """
@@ -305,8 +310,9 @@ class LeWorldModel(nn.Module):
         emb  = self.encode(obs)               # (B, T, D)
         pred = self.predictor(emb, actions)   # (B, T, D)
 
-        # Loss prédiction : ẑ_t vs z_{t+1}, sans stop-gradient
-        pred_loss = F.mse_loss(pred[:, :-1], emb[:, 1:])
+        # Cible : emb[:, 1:] avec ou sans stop-gradient
+        target = emb[:, 1:].detach() if self.stop_gradient else emb[:, 1:]
+        pred_loss = F.mse_loss(pred[:, :-1], target)
 
         # SIGReg : sur chaque pas de temps, moyenné
         T = emb.shape[1]
