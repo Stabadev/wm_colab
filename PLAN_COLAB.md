@@ -1105,3 +1105,5 @@ Si val loss remonte après train loss → overfitting, réduire LR ou augmenter 
 
 *Tout le code dans ce document est copié-collé depuis la session locale validée.
 Aucun code n'est inventé — ce qui est ici a été testé.*
+
+Mon Drive/projetColab/wm_colab/test_run
