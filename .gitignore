@@ -1,6 +1,6 @@
 local_test_run/
 *.npz
-*.pt
+local_runs/**/*.pt
 local_runs/
 checkpoints/
 __pycache__/
