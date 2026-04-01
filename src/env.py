@@ -32,7 +32,7 @@ class RenderConfig:
     color_bg: tuple = (255, 255, 255)    # fond image : blanc
     color_board: tuple = (210, 235, 228) # fond board : vert-gris
     color_line: tuple = (17, 17, 17)     # lignes grille : noir
-    gray_agent: int = 141                # agent : gris clair
+    gray_agent: int = 80                # agent : gris un peu moins foncé que la cible
     gray_target: int = 60               # cible : gris foncé
     pad_agent: float = 0.32             # padding agent (0 = toute la case)
     line_w: float = 1.2                 # épaisseur lignes (px à 128px ref)
@@ -204,11 +204,6 @@ def render_obs(agent_pos, target_pos, cache: RenderCache) -> np.ndarray:
     # Fond du board
     for q in cache.board_quads.values():
         draw.polygon(q, fill=cache.gray_board)
-
-    # Cible (dessinée avant l'agent — reste visible grâce au padding)
-    tc, tr = target_pos
-    if (tc, tr) in cache.board_quads:
-        draw.polygon(cache.board_quads[(tc, tr)], fill=cfg.gray_target)
 
     # Agent (avec padding)
     ac, ar = agent_pos
