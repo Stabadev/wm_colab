@@ -1,6 +1,6 @@
 # wm_colab
 
-Prototype expérimental d’un modèle latent inspiré de [LeWorldModel](https://arxiv.org/abs/2406.14277), entraîné sur un gridworld isométrique 5×5.
+Prototype expérimental d’un modèle latent inspiré de [LeWorldModel](https://arxiv.org/html/2603.19312v2), entraîné sur un gridworld isométrique 5×5.
 
 Ce projet explore si un modèle peut apprendre, à partir de pixels et d’actions uniquement, une représentation latente structurée suffisante pour :
 - encoder la position de l’agent,
